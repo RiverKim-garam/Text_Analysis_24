@@ -1,0 +1,67 @@
+---
+title: "Exercise 2"
+author: "River Kim"
+date: "2024-01-31"
+output: html_document
+---
+
+
+```{r}
+library(academictwitteR) # for fetching Twitter data
+library(tidyverse)
+library(readr) # more informative and easy way to import data
+library(stringr) # to handle text elements
+library(tidytext) # includes set of functions useful for manipulating text
+library(textdata)
+
+tweets  <- readRDS(gzcon(url("https://github.com/cjbarrie/CTA-ED/blob/main/data/sentanalysis/newstweets.rds?raw=true")))
+
+head(tweets)
+colnames(tweets)
+```
+
+```{r}
+tweets <- tweets %>%
+  select(user_username, text, created_at, user_name, retweet_count, like_count, quote_count) %>%
+  rename(username = user_username,
+         newspaper = user_name,
+         tweet = text)
+
+## tokenizing
+tidy_tweets <- tweets %>%
+  mutate(desc = tolower(tweet)) %>%
+  unnest_tokens(word, desc) %>%     ## tokenize
+  filter(str_detect(word, "[a-z]")) ## range = a-z alphabet
+
+## stopwords
+tidy_tweets <- tidy_tweets %>%
+  filter(!word %in% stop_words$word)
+
+```
+
+```{r}
+##1.
+bynews_tweets_nrc_sentiment <- tidy_tweets %>%
+  inner_join(get_sentiments("nrc")) %>% ## standard
+  count(newspaper, date, index = order %/% 1000, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>% ##seperate sentiment columns
+  mutate(sentiment = positive - negative) ##score
+
+ggplot(bynews_tweets_nrc_sentiment, aes(date, sentiment) + geom_line(aes(color = bynews_tweets_nrc_sentiment$newspaper))
+```
+
+
+```{r}
+##2.Build your own (minimal) dictionary-based filter technique and plot the result
+my_dic <- c('cash', 'music')
+dic_value <- c(1, 1)
+my_dic_word <- data.frame(my_dic, dic_value)
+
+tidy_tweets %>%
+  inner_join(my_dic_word) %>%
+  group_by(date, index = order %/% 100) %>% 
+  summarise(dic_words = sum(value)) %>% 
+  ggplot(aes(date, dic_words)) +
+  geom_bar(stat= "identity") +
+  ylab("my words")
+```
