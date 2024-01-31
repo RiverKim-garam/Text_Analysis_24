@@ -1,0 +1,47 @@
+---
+title: "W2_Tokenization_quanteda"
+author: "River Kim"
+date: "2024-01-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R packages
+
+```{r packages}
+library(quanteda)
+```
+
+## Data
+
+```{r data, echo=FALSE}
+text_socio <- "One of my friends was giddy too—but not for the same reason as me. She decided that she would try to pay for her trip by taking the perfect photograph of Brad and Angelina and selling it to the highest bidder. She reasoned that the paparazzi had chosen our street because it must be the best location to photograph the superstars and their kids. In fact, we did see Brangelina a few times. Now I respect every person’s right to privacy, be they my long-standing crush or anyone else. Thus each time we saw Brangelina and kids, I’d jump in front of the camera while my friend tried to snap the perfect shot. As a result, instead of focusing in on Brad and Angelina, her camera always focused on my head. Needless to say, my friend never got a shot worthy of selling to pay for her trip."
+```
+
+## corpus
+```{r}
+corpus_socio <- corpus(text_socio)
+
+```
+## tokenization
+```{r}
+tokens_socio <- tokens(corpus_socio)
+
+#remove punctuation
+tokens_socio <- tokens(corpus_socio, remove_punct = TRUE)
+
+print(tokens_socio)
+
+```
+
+##remove unnecessary things
+```{r}
+# remove stopwords
+token_nostop <- tokens_select(tokens_socio, pattern = stopwords("en"), selection = "remove")
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
