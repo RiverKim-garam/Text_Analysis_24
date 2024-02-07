@@ -1,0 +1,134 @@
+---
+title: "W3-tutorial"
+author: "River Kim"
+date: "2024-01-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+getwd()
+library(tidyverse)
+library(readr) 
+library(stringr)
+library(tidytext) 
+library(quanteda)
+library(textdata)
+```
+
+```{r}
+data_barbie <- read.csv("Barbie_Reddit_Posts - Barbie_Reddit_Posts.csv")
+data_oppenheimer <- read.csv("Oppenheimer_Reddit_Posts - Oppenheimer_Reddit_Posts.csv")
+
+head(data_barbie)
+names(data_barbie)
+```
+
+```{r}
+# create extra variable to identify the two datasets (filled with barbie)
+data_barbie <- data_barbie %>%
+  mutate(reddit = "barbie")
+
+data_barbie$reddit
+
+data_oppenheimer <- data_oppenheimer %>%
+  mutate(reddit = "oppenheimer")
+
+
+#bind rows to make a single dataset
+data <- data_barbie %>%
+  bind_rows(data_oppenheimer)
+
+#add row number variable
+data <- data %>%
+  mutate(id = row_number())
+
+```
+
+##corpus
+```{r}
+#creating corpus
+corpus_barbie_oppen <- corpus(data, text_field = "Post.Text")
+
+#assigning names to each document
+
+```
+
+```{r}
+# subsetting corpus
+
+# extracting document-level variables
+```
+
+## Tokenisation and cleanup
+```{r}
+# start from corpus data
+# remove punctuation
+# remove stopwords
+# to lower but keep acronyms
+```
+
+## document-feature matrix
+```{r}
+# you can also do a lot of text data preprocessing after creating a Dfm, e.g. 
+# and you can use it to select or remove features
+```
+
+## removing features, introducing Regex
+
+Look up regex cheatsheet
+```{r}
+
+```
+
+# regular expressions, glob vs regex, fixed
+```{r}
+```
+
+# dictionary method
+```{r}
+library(quanteda.dictionaries)
+```
+Dictionary creation is done through the `dictionary()` function, which classes a named list of characters as a dictionary.
+
+## creating your own dictionary
+```{r}
+# create your own dictionary
+```
+
+The most frequent scenario is when we pass through a dictionary at the time of `dfm()` creation.
+```{r}
+# dfm with dictionaries
+```
+
+
+## Applying an existing dictionary
+Apply the Lexicoder Sentiment Dictionary to the selected contexts using tokens_lookup().
+```{r}
+# look at the categories of the Lexicoder
+lengths(data_dictionary_LSD2015)
+
+# select only the "negative" and "positive" categories
+data_dictionary_LSD2015_pos_neg <- data_dictionary_LSD2015[1:2]
+```
+
+
+```{r}
+# go back to our barbie/oppenheimer tokenised data
+
+
+# create a document document-feature matrix and group it by day
+
+
+# prep data + sentiment ratio variable for analysis
+
+
+# basic plot: frequency of positive words
+
+
+# basic plot: frequency of positive/negative words
+
+```
